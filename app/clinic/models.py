@@ -1,10 +1,11 @@
 from django.db import models
 from administration.models import Address,PersonalInformations
 from django.utils.translation import ugettext as _
+from authentication.models import User
 
 # Create your models here.
 
-class MedicalType(models.Model):
+class ClinicType(models.Model):
     name = models.CharField(max_length=50)
     def __str__(self):
         return self.name
@@ -12,11 +13,11 @@ class MedicalType(models.Model):
 class Clinic(models.Model):
     name = models.CharField(max_length=50)
     address = models.ForeignKey(Address,on_delete = models.SET_NULL,null=True)
-    description = models.CharField(max_length=1000)
-    medical_type = models.ForeignKey(MedicalType,on_delete=models.SET_NULL,null=True)
+    description = models.CharField(max_length=1000,null=True)
+    clinic_type = models.ForeignKey(ClinicType,on_delete=models.SET_NULL,null=True)
+    user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
 
-    class MPTTMeta:
-        order_insertion_by = ['name']
+    class Meta:
         verbose_name = _("Clinic")
         verbose_name_plural = _('Clinics')
 

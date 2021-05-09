@@ -23,16 +23,10 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_clinic_user(self, email, password=None, **extra_fields):
+    def create_user(self, email, password=None,is_active=False, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
-        extra_fields.setdefault('is_active', False)
-        return self._create_user(email, password, **extra_fields)
-
-    def create_customer_user(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
-        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_active',is_active)
         return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
