@@ -16,7 +16,7 @@ class PersonalInformations(models.Model):
     ]
     first_name = models.CharField(max_length=30, null=False, blank=False)
     last_name = models.CharField(max_length=30, null=False, blank=False)
-    telephone = models.CharField(max_length=20,null=False,blank=False)
+    telephone = models.CharField(max_length=20,null=True,blank=True)
     gender = models.CharField(choices=GENDER_IN_PERSONALINFO_CHOICES,max_length=2)
     class Meta:
         abstract = True

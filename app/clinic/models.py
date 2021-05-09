@@ -39,6 +39,7 @@ class Staff(TimeStampMixin,PersonalInformations):
     specialisations = models.ManyToManyField(Specialization)
     languages = models.ManyToManyField(Language)
     email = models.CharField(max_length=100,null=True,blank=True)
+    photo = models.ImageField(upload_to='profile')
     def __str__(self):
         return self.first_name + " " + self.last_name
 

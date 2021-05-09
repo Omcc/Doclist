@@ -19,7 +19,7 @@ class ClinicTypeSerializer(serializers.ModelSerializer):
 class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
-        fields = ("id", "first_name","last_name","telephone","gender","description","clinic")
+        fields = ("id", "first_name","last_name","telephone","gender","description","clinic","photo")
 
 
 

@@ -2,36 +2,11 @@ from django.urls import path,include
 
 from . import views
 from rest_framework.routers import DefaultRouter
+from rest_framework_nested import routers
 
 
-from rest_framework.routers import Route, DynamicRoute, SimpleRouter
 
-class CustomReadOnlyRouter(SimpleRouter):
-    """
-    A router for read-only APIs, which doesn't use trailing slashes.
-    """
-    routes = [
-        Route(
-            url=r'^{prefix}$',
-            mapping={'get': 'list'},
-            name='{basename}-list',
-            detail=False,
-            initkwargs={'suffix': 'List'}
-        ),
-        Route(
-            url=r'^{prefix}/{lookup}/staffs$',
-            mapping={'get': 'retrieve'},
-            name='{basename}-detail',
-            detail=True,
-            initkwargs={'suffix': 'Detail'}
-        ),
-        DynamicRoute(
-            url=r'^{prefix}/{lookup}/{url_path}$',
-            name='{basename}-{url_name}',
-            detail=True,
-            initkwargs={}
-        )
-    ]
+
 
 clinic_list = views.ClinicView.as_view({
     'get':'list',
@@ -51,13 +26,21 @@ staff_list = views.StaffView.as_view({
 })
 
 
-router = CustomReadOnlyRouter()
-
+router = routers.SimpleRouter()
 router.register('clinics',views.ClinicView,basename='clinics')
-router.register('staffs',views.StaffView,basename="clinics-staffs")
+staff_router = routers.NestedSimpleRouter(
+    router,
+    r'clinics',
+    lookup='clinic'
+)
+
+staff_router.register(
+    r'staffs',
+    views.StaffView,
+    basename="clinic-staff"
+)
 
 urlpatterns = [
-    path('clinics/',clinic_list,name="clinic-list"),
-    path('clinics/<int:pk>/',clinic_detail,name="clinic-detail"),
-    path('clinics/staffs',staff_list,name="clinic-staff-list")
+    path('',include(router.urls)),
+    path('',include(staff_router.urls))
 ]
