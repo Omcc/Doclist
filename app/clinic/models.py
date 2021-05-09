@@ -18,6 +18,7 @@ class Clinic(TimeStampMixin):
     telephone = models.CharField(max_length=15)
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
 
+
     class Meta:
         verbose_name = _("Clinic")
         verbose_name_plural = _('Clinics')
@@ -25,6 +26,10 @@ class Clinic(TimeStampMixin):
     def __str__(self):
         return self.name
 
+class ImageClinic(models.Model):
+    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='clinics/')
+    default = models.BooleanField(default=False)
 
 class Specialization(models.Model):
     title = models.CharField(max_length=50)

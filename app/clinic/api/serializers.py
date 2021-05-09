@@ -11,6 +11,7 @@ from django.contrib.auth.hashers import make_password
 
 
 class ClinicTypeSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = ClinicType
         fields = ["id","name"]
@@ -32,6 +33,7 @@ class ClinicSerializer(serializers.ModelSerializer):
     )
     address = AddressSerializer(many=False)
     user = UserSerializer(many=False)
+
     class Meta:
         model= Clinic
         fields = ["id","name","address","description","clinic_type","user","telephone"]
