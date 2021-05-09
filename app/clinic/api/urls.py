@@ -28,11 +28,20 @@ staff_list = views.StaffView.as_view({
 
 router = routers.SimpleRouter()
 router.register('clinics',views.ClinicView,basename='clinics')
+
 staff_router = routers.NestedSimpleRouter(
     router,
     r'clinics',
     lookup='clinic'
 )
+
+clinic_image_router = routers.NestedSimpleRouter(
+    router,
+    r'clinics',
+    lookup = 'clinic'
+)
+
+
 
 staff_router.register(
     r'staffs',
@@ -40,7 +49,26 @@ staff_router.register(
     basename="clinic-staff"
 )
 
+staff_image_router = routers.NestedSimpleRouter(
+    staff_router,
+    r'staffs',
+    lookup='staff'
+)
+
+clinic_image_router.register(
+    r'images',
+    views.ClinicImageView,
+    basename='clinic-image'
+)
+staff_image_router.register(
+    r'images',
+    views.StaffImageView,
+    basename='staff-image'
+)
+
 urlpatterns = [
     path('',include(router.urls)),
-    path('',include(staff_router.urls))
+    path('',include(staff_router.urls)),
+    path('',include(clinic_image_router.urls)),
+    path('',include(staff_image_router.urls))
 ]

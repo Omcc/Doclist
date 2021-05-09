@@ -1,7 +1,7 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from authentication.models import User
-from clinic.models import Clinic,ClinicType,Staff
+from clinic.models import Clinic,ClinicType,Staff,ImageClinic,ImageStaff
 from rest_framework_simplejwt.tokens import RefreshToken
 from administration.models import Address
 from administration.api.serializers import AddressSerializer
@@ -9,6 +9,11 @@ from authentication.api.serializers import UserSerializer
 from django.contrib.auth.hashers import make_password
 
 
+
+class StaffImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImageStaff
+        fields = ["image","default","staff"]
 
 class ClinicTypeSerializer(serializers.ModelSerializer):
 
@@ -18,10 +23,18 @@ class ClinicTypeSerializer(serializers.ModelSerializer):
         depth=1
 
 class StaffSerializer(serializers.ModelSerializer):
+    images = StaffImageSerializer(many=True,required=False)
     class Meta:
         model = Staff
-        fields = ("id", "first_name","last_name","telephone","gender","description","clinic","photo")
+        fields = ("id", "first_name","last_name","telephone","gender","description","clinic","images")
+        read_only_fields = ('images',)
 
+
+
+class ClinicImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImageClinic
+        fields = ["image","default","clinic"]
 
 
 
@@ -33,10 +46,11 @@ class ClinicSerializer(serializers.ModelSerializer):
     )
     address = AddressSerializer(many=False)
     user = UserSerializer(many=False)
+    images = ClinicImageSerializer(many=True)
 
     class Meta:
         model= Clinic
-        fields = ["id","name","address","description","clinic_type","user","telephone"]
+        fields = ["id","name","address","description","clinic_type","user","telephone","images"]
         read_only_fields=('clinic_type',"address")
 
     def create(self,validated_data):

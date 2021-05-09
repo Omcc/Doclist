@@ -18,6 +18,10 @@ class Clinic(TimeStampMixin):
     telephone = models.CharField(max_length=15)
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
 
+    @property
+    def images(self):
+        return self.imageclinic_set.all()
+
 
     class Meta:
         verbose_name = _("Clinic")
@@ -26,15 +30,10 @@ class Clinic(TimeStampMixin):
     def __str__(self):
         return self.name
 
-class ImageClinic(models.Model):
-    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='clinics/')
-    default = models.BooleanField(default=False)
-
-class Specialization(models.Model):
+class Job(models.Model):
     title = models.CharField(max_length=50)
 
-class Job(models.Model):
+class Specialization(models.Model):
     title = models.CharField(max_length=50)
 
 class Staff(TimeStampMixin,PersonalInformations):
@@ -47,6 +46,26 @@ class Staff(TimeStampMixin,PersonalInformations):
     photo = models.ImageField(upload_to='profile')
     def __str__(self):
         return self.first_name + " " + self.last_name
+
+    @property
+    def images(self):
+        return self.imagestaff_set.all()
+
+class ImageClinic(models.Model):
+    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='clinics/')
+    default = models.BooleanField(default=False)
+
+class ImageStaff(models.Model):
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='staffs/')
+    default = models.BooleanField(default=False)
+
+
+
+
+
+
 
 
 
