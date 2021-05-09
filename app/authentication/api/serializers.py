@@ -8,9 +8,13 @@ class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model= User
-        fields= ('id','email','name','password',)
+        fields= ('id','email','first_name','last_name','password','name')
 
-        extra_kwargs = {'password': {'write_only': True, 'min_length': 4}}
+        extra_kwargs = {
+            'password': {'write_only': True, 'min_length': 4},
+            'first_name':{'write_only':True},
+            'last_name':{'write_only':True}
+        }
 
     def get_name(self,obj):
         name = obj.first_name

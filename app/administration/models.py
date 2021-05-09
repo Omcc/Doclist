@@ -21,6 +21,13 @@ class PersonalInformations(models.Model):
     class Meta:
         abstract = True
 
+class TimeStampMixin(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
 
 class Country(models.Model):
     binary_code = models.CharField(max_length=2,null=False)
@@ -74,3 +81,9 @@ class Address(models.Model):
 
     def __str__(self):
         return "{} {} {}".format(self.city,self.county,self.full_address)
+
+class Language(models.Model):
+    name = models.CharField(max_length=50,null=False,blank=False)
+    code = models.CharField(max_length=10)
+
+

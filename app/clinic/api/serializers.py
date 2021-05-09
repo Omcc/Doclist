@@ -1,7 +1,7 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from authentication.models import User
-from clinic.models import Clinic,ClinicType
+from clinic.models import Clinic,ClinicType,Staff
 from rest_framework_simplejwt.tokens import RefreshToken
 from administration.models import Address
 from administration.api.serializers import AddressSerializer
@@ -16,6 +16,16 @@ class ClinicTypeSerializer(serializers.ModelSerializer):
         fields = ["id","name"]
         depth=1
 
+class StaffSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Staff
+        fields = ("id", "first_name","last_name","telephone","gender","description","clinic")
+
+
+
+
+
+
 class ClinicSerializer(serializers.ModelSerializer):
     clinic_type = serializers.PrimaryKeyRelatedField(
         queryset= ClinicType.objects.all(),required=True
@@ -24,7 +34,7 @@ class ClinicSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False)
     class Meta:
         model= Clinic
-        fields = ["id","name","address","description","clinic_type","user"]
+        fields = ["id","name","address","description","clinic_type","user","telephone"]
         read_only_fields=('clinic_type',"address")
 
     def create(self,validated_data):
@@ -35,6 +45,9 @@ class ClinicSerializer(serializers.ModelSerializer):
         address_data= validated_data.pop('address')
         address = Address.objects.create(**address_data)
         clinic = Clinic.objects.create(**validated_data,address=address,user=user)
+        staff = Staff.objects.create(first_name=user_data["first_name"],
+                                                  last_name=user_data["last_name"],
+                                                  clinic_id = clinic.id)
 
         return clinic
 
