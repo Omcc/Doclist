@@ -4,7 +4,7 @@ from authentication.models import User
 from clinic.models import Clinic,ClinicType,Staff,ImageClinic,ImageStaff
 from rest_framework_simplejwt.tokens import RefreshToken
 from administration.models import Address
-from administration.api.serializers import AddressSerializer
+from administration.api.serializers import AddressSerializer,LanguageSerializer,SpecializationSerializer,TitleSerializer,JobSerializer
 from authentication.api.serializers import UserSerializer
 from django.contrib.auth.hashers import make_password
 
@@ -13,7 +13,7 @@ from django.contrib.auth.hashers import make_password
 class StaffImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageStaff
-        fields = ["image","default","staff"]
+        fields = ["id","image","default","staff"]
 
 class ClinicTypeSerializer(serializers.ModelSerializer):
 
@@ -24,10 +24,29 @@ class ClinicTypeSerializer(serializers.ModelSerializer):
 
 class StaffSerializer(serializers.ModelSerializer):
     images = StaffImageSerializer(many=True,required=False)
+    languages = LanguageSerializer(many=True,required=False)
+    specialisations = SpecializationSerializer(many=True,required=False)
+
+
+
     class Meta:
         model = Staff
-        fields = ("id", "first_name","last_name","telephone","gender","description","clinic","images")
+        fields = ("id", "firstname","lastname","telephone","gender","title","job","description","clinic","images","languages","specialisations","email")
         read_only_fields = ('images',)
+        extra_kwargs = {"telephone": {"required": False, "allow_null": True},
+                        "gender": {"required": False, "allow_null": True},
+                        "specialisations": {"required": False, "allow_null": True},
+                        "languages": {"required": False, "allow_null": True},
+                        "job": {"required": False, "allow_null": True},
+                        "title": {"required": False, "allow_null": True},
+
+                        }
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret['job'] = JobSerializer(instance.job).data
+        ret['title'] = TitleSerializer(instance.title).data
+        return ret
+
 
 
 
@@ -46,7 +65,7 @@ class ClinicSerializer(serializers.ModelSerializer):
     )
     address = AddressSerializer(many=False)
     user = UserSerializer(many=False)
-    images = ClinicImageSerializer(many=True)
+    images = ClinicImageSerializer(many=True,required=False)
 
     class Meta:
         model= Clinic
@@ -61,8 +80,8 @@ class ClinicSerializer(serializers.ModelSerializer):
         address_data= validated_data.pop('address')
         address = Address.objects.create(**address_data)
         clinic = Clinic.objects.create(**validated_data,address=address,user=user)
-        staff = Staff.objects.create(first_name=user_data["first_name"],
-                                                  last_name=user_data["last_name"],
+        staff = Staff.objects.create(firstname=user_data["firstname"],
+                                                  lastname=user_data["lastname"],
                                                   clinic_id = clinic.id)
 
         return clinic

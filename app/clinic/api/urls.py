@@ -26,8 +26,11 @@ staff_list = views.StaffView.as_view({
 })
 
 
+
+
 router = routers.SimpleRouter()
 router.register('clinics',views.ClinicView,basename='clinics')
+router.register('clinic-types',views.ClinicTypeViewSet,basename="clinic-types")
 
 staff_router = routers.NestedSimpleRouter(
     router,

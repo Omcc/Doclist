@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics, status,viewsets
 from rest_framework.response import Response
 
-from administration.models import Country,City,District,County,Address
-from .serializers import CountrySerializer,CitySerializer,DistrictSerializer,CountySerializer,AddressSerializer
+from administration.models import Country,City,District,County,Address,Language,Specialization
+from .serializers import CountrySerializer,CitySerializer,DistrictSerializer,CountySerializer,AddressSerializer,LanguageSerializer,SpecializationSerializer
 
 
 class CountryListView(generics.ListAPIView):
@@ -43,3 +43,11 @@ class CountyListView(generics.ListAPIView):
 class AddressView(viewsets.ModelViewSet):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
+
+class LanguageListView(generics.ListAPIView):
+    serializer_class = LanguageSerializer
+    queryset = Language.objects.all()
+
+class SpecListView(generics.ListAPIView):
+    serializer_class = SpecializationSerializer
+    queryset = Specialization.objects.all()

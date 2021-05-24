@@ -12,6 +12,8 @@ urlpatterns = [
     path('countries/',views.CountryListView.as_view(),name='countries'),
     path('countries/<int:id>/cities/',views.CityListView.as_view(),name='cities'),
     path('cities/<int:id>/counties/',views.CountyListView.as_view(),name="counties"),
+    path('languages/',views.LanguageListView.as_view(),name="languages"),
+    path('specs/',views.SpecListView.as_view(),name="specs"),
     path('',include(router.urls))
 
 ]

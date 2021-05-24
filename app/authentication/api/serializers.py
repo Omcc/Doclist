@@ -8,29 +8,38 @@ class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model= User
-        fields= ('id','email','first_name','last_name','password','name')
+        fields= ('id','email','firstname','lastname','password','name')
 
         extra_kwargs = {
             'password': {'write_only': True, 'min_length': 4},
-            'first_name':{'write_only':True},
-            'last_name':{'write_only':True}
+            'firstname':{'write_only':True},
+            'lastname':{'write_only':True}
         }
 
     def get_name(self,obj):
-        name = obj.first_name
+        name = obj.firstname
         if name=='':
             name = obj.email
         return name
 
 class UserSerializerWithToken(UserSerializer):
     token = serializers.SerializerMethodField(read_only=True)
+    clinic_id = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model= User
-        fields= ['id','email','name','token']
+        fields= ['id','email','name','token','clinic_id']
 
     def get_token(self,obj):
         token = RefreshToken.for_user(obj)
         return str(token)
+
+    def get_clinic_id(self,obj):
+        clinic = obj.clinic_set.get()
+        if(clinic):
+            return clinic.id
+        else:
+            return 0
+
 
 
 
@@ -38,9 +47,13 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
+        clinic = user.clinic_set.get()
+        if clinic:
+            token["clinic_id"]=clinic.id
+
 
         # Add custom claims
-        token['name'] = user.first_name
+        token['name'] = user.firstname
         token["test"] = "test"
         # ...
 

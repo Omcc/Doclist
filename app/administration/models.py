@@ -14,8 +14,8 @@ class PersonalInformations(models.Model):
         ('F', _('Female')),
         ('U', _('Unknown'))
     ]
-    first_name = models.CharField(max_length=30, null=False, blank=False)
-    last_name = models.CharField(max_length=30, null=False, blank=False)
+    firstname = models.CharField(max_length=30, null=False, blank=False)
+    lastname = models.CharField(max_length=30, null=False, blank=False)
     telephone = models.CharField(max_length=20,null=True,blank=True)
     gender = models.CharField(choices=GENDER_IN_PERSONALINFO_CHOICES,max_length=2)
     class Meta:
@@ -37,6 +37,10 @@ class Country(models.Model):
 
     def __str__(self):
         return self.country_name
+
+
+
+
 
 class City(models.Model):
     country = models.ForeignKey(Country,on_delete=models.CASCADE)
@@ -75,7 +79,6 @@ class Address(models.Model):
         show_all=False,
         auto_choose=True,
     )
-    district = models.CharField(max_length=100,null=False)
     full_address = models.CharField(max_length=100,null=False)
     postal_code = models.IntegerField(null=False)
 
@@ -85,6 +88,22 @@ class Address(models.Model):
 class Language(models.Model):
     name = models.CharField(max_length=50,null=False,blank=False)
     code = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
+
+class Specialization(models.Model):
+    title = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.title
+
+class Job(models.Model):
+    title = models.CharField(max_length=50)
+
+class Title(models.Model):
+    name = models.CharField(max_length=50)
+
 
 
 

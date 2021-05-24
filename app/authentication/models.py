@@ -55,12 +55,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # All these field declarations are copied as-is
     # from `AbstractUser`
-    first_name = models.CharField(
+    firstname = models.CharField(
         _('first name'),
         max_length=30,
         blank=True,
     )
-    last_name = models.CharField(
+    lastname = models.CharField(
         _('last name'),
         max_length=150,
         blank=True,
